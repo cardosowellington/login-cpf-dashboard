@@ -20,7 +20,7 @@ require_once LOGIN_PATH . 'includes/cpf-functions.php';
 
 register_activation_hook( __FILE__, 'cpf_create_table' );
 
-function cpf_login_travel_init(){
+function cpf_login_dashboard_init(){
   if( class_exists( 'CPF_Login' ) ){
     new CPF_Login();
   }
@@ -28,4 +28,4 @@ function cpf_login_travel_init(){
     new CPF_Admin();
   }
 }
-add_action( 'plugins_loaded', 'cpf_login_travel_init' );
+add_action( 'plugins_loaded', 'cpf_login_dashboard_init' );
