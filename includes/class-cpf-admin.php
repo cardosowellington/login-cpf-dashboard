@@ -58,7 +58,7 @@ class CPF_Admin{
         <label>CPF:</label>
         <input type="text" name="cpf" placeholder="000.000.000-00" required >
         <label>Full Name: </label>
-        <input type="text" name="nome" placeholder="Nome completo" required >
+        <input type="text" name="nome" placeholder="Full Name" required >
         <label>E-mail: </label>
         <input type="email" name="email" placeholder="email@exemplo.com" required >
         <button class="button button-primary" type="submit">Save</button>
