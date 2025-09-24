@@ -22,9 +22,11 @@ Após a autenticação validada, o usuário é redirecionado automaticamente par
 ## Instalação
 
 1. Clone este repositório ou baixe o arquivo .zip:
+
   git clone https://github.com/cardosowellington/login-cpf-dashboard
 
 2. Copie a pasta para:
+
   /wp-content/plugins/login-cpf-dashboard
 
 3. Ative o plugin em Plugins > Ativar no painel do WordPress.
