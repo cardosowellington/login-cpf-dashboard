@@ -9,9 +9,9 @@ function cpf_create_table(){
 
   $sql = "CREATE TABLE $table(
     id mediumint(9) NOT NULL AUTO_INCREMENT,
-    cpf varchar(11) NOT NULL,
-    nome varchar(100) NOT NULL,
-    email varchar(150) NOT NULL,
+    cpf varchar(11) NOT NULL UNIQUE,
+    nome varchar(100) NOT NULL UNIQUE,
+    email varchar(150) NOT NULL UNIQUE,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
   ) $charset_collate;";

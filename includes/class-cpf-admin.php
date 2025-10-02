@@ -47,7 +47,7 @@ class CPF_Admin{
 
     global $wpdb;
     $table = $wpdb->prefix . "cpf_users";
-    $items = $wpdb->get_results( "SELECT * FROM $table ORDER BY created_at DESC LIMIT 10" );
+    $items = $wpdb->get_results( "SELECT * FROM $table ORDER BY created_at DESC LIMIT 25" );
     ?>
     <div class="wrap">
       <h1>Manage user</h1>
@@ -77,7 +77,7 @@ class CPF_Admin{
 
       <hr>
 
-      <h2>Latest registered users (10)</h2>
+      <h2>Latest registered users (25)</h2>
       <table class="widefat fixed striped">
         <thead><tr><th>ID</th><th>CPF</th><th>Name</th><th>E-mail</th></tr></thead>
         <tbody>
@@ -109,7 +109,7 @@ class CPF_Admin{
     check_admin_referer( 'cpf_add_manual_nonce' );
     
     if( empty( $_POST['cpf'] ) || empty( $_POST['nome'] ) || empty( $_POST['email'] ) ){
-      wp_redirect( add_query_arg( 'cpf_error', urldecode( 'Todos os campons são obrigatórios.' ), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
+      wp_redirect( add_query_arg( 'cpf_error', urldecode( 'Todos os campos são obrigatórios.' ), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
       exit;
     }     
 

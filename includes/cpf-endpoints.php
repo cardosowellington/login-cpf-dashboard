@@ -23,9 +23,17 @@ function cpf_login_handler(){
   if( $row ){
     $login = 'cpf_user_' . $row->id;
     $user = get_user_by( 'login', $login );
+
     if( ! $user ){
       $user_id = wp_create_user( $login, wp_generate_password(), $row->email );
-      wp_update_user( [ 'ID' => $user_id, 'display_name' => $row->name ] );
+
+      // wp_update_user( [ 'ID' => $user_id, 'display_name' => $row->nome ] );
+      wp_update_user( [ 'ID' => $user_id, 'display_name' => $row->nome, 'user_nicename' => sanitize_title($row->nome) ] );
+
+      update_user_meta( $user_id, 'first_name', $row->nome );
+      update_user_meta( $user_id, 'nickname', $row->nome );
+
+
       $user = get_user_by( 'id', $user_id );
       if( $user ){
         $user->set_role( 'subscriber' );
