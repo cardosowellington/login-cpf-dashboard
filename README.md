@@ -31,7 +31,6 @@ Após a autenticação validada, o usuário é redirecionado automaticamente par
 
 3. Ative o plugin em Plugins > Ativar no painel do WordPress.
 
-
 ## Como Usar
 
 1. O admin cadastra usuários no WordPress, incluindo o campo CPF.

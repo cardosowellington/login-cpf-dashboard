@@ -47,7 +47,7 @@ class CPF_Admin{
 
     global $wpdb;
     $table = $wpdb->prefix . "cpf_users";
-    $items = $wpdb->get_results( "SELECT * FROM $table ORDER BY created_at DESC LIMIT 10" );
+    $items = $wpdb->get_results( "SELECT * FROM $table ORDER BY created_at DESC LIMIT 25" );
     ?>
     <div class="wrap">
       <h1>Manage user</h1>
@@ -58,7 +58,7 @@ class CPF_Admin{
         <label>CPF:</label>
         <input type="text" name="cpf" placeholder="000.000.000-00" required >
         <label>Full Name: </label>
-        <input type="text" name="nome" placeholder="Nome completo" required >
+        <input type="text" name="nome" placeholder="Full Name" required >
         <label>E-mail: </label>
         <input type="email" name="email" placeholder="email@exemplo.com" required >
         <button class="button button-primary" type="submit">Save</button>
@@ -77,7 +77,7 @@ class CPF_Admin{
 
       <hr>
 
-      <h2>Latest registered users (10)</h2>
+      <h2>Latest registered users (25)</h2>
       <table class="widefat fixed striped">
         <thead><tr><th>ID</th><th>CPF</th><th>Name</th><th>E-mail</th></tr></thead>
         <tbody>
@@ -109,7 +109,7 @@ class CPF_Admin{
     check_admin_referer( 'cpf_add_manual_nonce' );
     
     if( empty( $_POST['cpf'] ) || empty( $_POST['nome'] ) || empty( $_POST['email'] ) ){
-      wp_redirect( add_query_arg( 'cpf_error', urldecode( 'Todos os campons são obrigatórios.' ), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
+      wp_redirect( add_query_arg( 'cpf_error', urldecode( 'Todos os campos são obrigatórios.' ), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
       exit;
     }     
 

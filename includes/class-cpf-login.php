@@ -20,7 +20,7 @@ class CPF_Login{
     ob_start();?>
     <form id="cpf-login-form">
       <label for="cpf">Digite seu CPF</label>
-      <input type="text" id="cpf" name="cpf" required maxlength="14" placeholder="000.000.000-00">
+      <input type="text" id="cpf" name="cpf" required maxlength="11" placeholder="000.000.000-00">
       <button type="submit">Entrar</button>
       <div id="cpf-login-msg"></div>
     </form>
