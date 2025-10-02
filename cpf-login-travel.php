@@ -6,7 +6,6 @@
  * Author: Cardoso Wellington
  * Author URI: https://github.com/cardosowellington
  */
-
 if ( ! defined( 'ABSPATH') ) exit;
 
 define( 'LOGIN_PATH', plugin_dir_path( __FILE__ ) );
