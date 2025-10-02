@@ -1,5 +1,4 @@
 <?php
-
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 add_action( 'wp_ajax_nopriv_cpf_login', 'cpf_login_handler' );
