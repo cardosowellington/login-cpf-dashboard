@@ -1,5 +1,4 @@
 <?php
-
 if( ! defined( 'ABSPATH' ) ) exit;
 
 class CPF_Admin{
@@ -23,15 +22,14 @@ class CPF_Admin{
   }
 
   public function render_admin_page(){
-
     if( ! current_user_can( 'manage_options' ) ) wp_die( 'Acesso negado.' );
 
     if( isset($_GET['cpf_error']) ){
-      echo '<div class="notice notice-error"><p>'.esc_html( urldecode( $_GET['cpf_error'] ) ).'</p></div';
+      echo '<div class="notice notice-error"><p>'.esc_html( urlencode( $_GET['cpf_error'] ) ).'</p></div';
     }
 
     if( isset($_GET['cpf_success']) ){
-      echo '<div class="notice notice-success"><p>'.esc_html( urldecode($_GET['cpf_success'])).'</p></div';
+      echo '<div class="notice notice-success"><p>'.esc_html( urlencode($_GET['cpf_success'])).'</p></div';
     }
 
     if( isset($_GET['import_done']) ){
@@ -89,7 +87,7 @@ class CPF_Admin{
               <td><?php echo esc_html( $it->email ); ?></td>
               <td><?php echo esc_html( $it->created_at ); ?></td>
               <td>
-                <form action="<?php echo esc_url(admin_url('admin-post.php'));?>" onsubmit="return confirm('tem certeza que deseja excluir este CPF?');">
+                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php'));?>" onsubmit="return confirm('tem certeza que deseja excluir este CPF?');">
                   <?php wp_nonce_field( 'cpf_delete_nonce' ); ?>
                   <input type="hidden" name="action" value="cpf_delete">
                   <input type="hidden" name="id" value="<?php echo esc_attr($it->id); ?>">
@@ -109,7 +107,7 @@ class CPF_Admin{
     check_admin_referer( 'cpf_add_manual_nonce' );
     
     if( empty( $_POST['cpf'] ) || empty( $_POST['nome'] ) || empty( $_POST['email'] ) ){
-      wp_redirect( add_query_arg( 'cpf_error', urldecode( 'Todos os campos são obrigatórios.' ), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
+      wp_redirect( add_query_arg( 'cpf_error', urlencode( 'Todos os campos são obrigatórios.' ), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
       exit;
     }     
 
@@ -119,17 +117,17 @@ class CPF_Admin{
     $email = sanitize_email( $_POST[ 'email' ] );
 
     if( ! cpf_is_valid($cpf ) ){
-      wp_redirect( add_query_arg( 'cpf_error', urldecode('CPF inválido.'), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
+      wp_redirect( add_query_arg( 'cpf_error', urlencode('CPF inválido.'), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
       exit;
     }
 
     if( empty($nome ) ){
-      wp_redirect( add_query_arg( 'cpf_error', urldecode('Nome inválido.'), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
+      wp_redirect( add_query_arg( 'cpf_error', urlencode('Nome inválido.'), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
       exit;
     }
 
     if( ! is_email($email ) ){
-      wp_redirect( add_query_arg( 'cpf_error', urldecode('E-mail inválido.'), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
+      wp_redirect( add_query_arg( 'cpf_error', urlencode('E-mail inválido.'), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
       exit;
     }
 
@@ -139,10 +137,10 @@ class CPF_Admin{
 
     if( $inserted === false ){
       $err = $wpdb->last_error ?: 'Erro desconhecido';
-      wp_redirect(add_query_arg( 'cpf_error', urldecode( "Falha ao inserir: $err" ), admin_url('admin.php?page=cpf-login-admin') ));
+      wp_redirect(add_query_arg( 'cpf_error', urlencode( "Falha ao inserir: $err" ), admin_url('admin.php?page=cpf-login-admin') ));
       exit;
     }else{
-      wp_redirect( add_query_arg( 'cpf_success', urldecode( 'CPF cadastrado com sucesso' ), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
+      wp_redirect( add_query_arg( 'cpf_success', urlencode( 'CPF cadastrado com sucesso' ), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
       exit;
     }
   }
@@ -181,21 +179,55 @@ class CPF_Admin{
 
   public function handle_delete(){
 
-    if( ! current_user_can( 'manage_options' ) ) wp_die( 'Acesso negado.' );
-    check_admin_referer('cpf_delete_nonce');
-
-    if( empty( $_POST['id'] ) ){
-      wp_redirect(admin_url( 'admin.php?page=cpf-login-admin' ));
+    if( ! current_user_can( 'manage_options' ) ){
+      error_log( "[CPF-ADMIN] handle_delete: acesso negado para o usuário" . get_current_user_id() );
+      wp_die( 'Acesso negado.' );
     }
+    
+    if( ! check_admin_referer('cpf_delete_nonce') ){
+      error_log( "[CPF-ADMIN] handle_delete: check_admin_referer return false" );
+      wp_redirect( add_query_arg( 'cpf_error', urlencode('Falha de segurança (nonce).'), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
+      exit;
+    }
+    
+    if( empty( $_POST['id'] ) ){
+      error_log( "[CPF-ADMIN] handle_delete: id ausente no POST" );
+      wp_redirect( add_query_arg( 'cpf_error', urlencode( 'ID ausente' ), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
+      exit;
+    }
+
+    $id = intval( $_POST['id'] );
+    error_log( "[CPF-ADMIN] handle_delete: tentando excluir ID={$id} pelo usuário ".get_current_user_id() );
 
     global $wpdb;
     $table = $wpdb->prefix . "cpf_users";
-    $deleted = $wpdb->delete($table, [ 'id' => intval($_POST['id'] )]);
+
+    // log
+    $row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $id ) );
+    if( !$row ){
+      error_log( "[CPF-ADMIN] handle_delete: registro não encontrado. Query checked ID={$id} on table {$table}" );
+      wp_redirect( add_query_arg( 'cpf_error', urlencode( 'Registro não encontrado.' ), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
+      exit;
+    }else{
+      error_log( "[CPF-ADMIN] handle_delete; registro encontrado: " . json_encode($row) );
+    }
+
+    $deleted = $wpdb->delete( $table, [ 'id' => $id ] );
 
     if( $deleted === false ){
-      wp_redirect( add_query_arg( 'cpf_error', urldecode( 'Falha ao excluir.' ), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
+      $last_error = $wpdb->last_error;
+      $last_query = $wpdb->last_query;
+      error_log("[CPF-ADMIN] handle_delete: delete return false. last_error={$last_error} last_query={$last_query}");
+      wp_redirect( add_query_arg( 'cpf_error', urlencode( 'Falha ao excluir (ver logs).' ), admin_url( 'admin.php?page=cpf-login-admin' ) ) );
+      exit;
+    }elseif( $deleted === 0 ){
+      error_log( "[CPF-ADMIN] handle_delete: delete retornou 0 — nenhuma linha removida. last_query={$wpdb->last_query}" );
+      wp_redirect( add_query_arg( 'cpf_error', urlencode( 'Nada foi removido (ID já ausente).' ), admin_url('admin.php?page=cpf-login-admin') ) );
+      exit;
     }else{
+      error_log( "[CPF-ADMIN] handle_delete: exclusão bem-sucedida. ID={$id} deletado." );
       wp_redirect( add_query_arg( 'cpf_deleted', '1', admin_url( 'admin.php?page=cpf-login-admin' ) ) );
+      exit;
     }
     exit;
   }
