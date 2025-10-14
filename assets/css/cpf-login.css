@@ -5,10 +5,10 @@
   width: 100%;
   margin: 0 auto;
   padding: 2rem;
-  border: 2px solid rgba(227,227,227,.5);
-  background-color: rgba(227,216,208,.2);
+  border: 2px solid rgba(227,227,227,1);
+  background-color: rgba(227,216,208,.4);
   border-radius: 8px;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,.1);
+  box-shadow: -4px 4px 0 2px rgba(0,0,0,.2);
 }
 
 #cpf-login-form input{
@@ -22,13 +22,13 @@
 
 #cpf-login-form input:focus{
   outline: none;
-  border: 2px solid #392E8D;
+  border: 2px solid #2d7ffd;
 }
 
 #cpf-login-form button{
   width: 100%;
   padding: 10px;
-  background: #392e8d;
+  background: #2d7ffd;
   color: #fff;
   border: none;
   cursor: pointer;
@@ -36,7 +36,7 @@
   transition: all .3s ease;
 }
 #cpf-login-form button:hover{
-  background-color: #392E8Dcc;
+  background-color: #2d7ffd;
 }
 
 #cpf-login-msg{
