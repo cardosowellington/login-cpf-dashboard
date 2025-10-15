@@ -22,6 +22,28 @@ function cpf_travel_user_trips_shortcode( $atts ) {
         echo '<p><strong>Origem:</strong> ' . esc_html( $t->origin ) . ' <strong>Destino:</strong> ' . esc_html( $t->destination ) . '</p>';
         if( $t->departure ) echo '<p><strong>Partida:</strong> ' . esc_html( date_i18n('d/m/Y H:i', strtotime($t->departure)) ) . '</p>';
         if( $t->arrival ) echo '<p><strong>Chegada:</strong> ' . esc_html( date_i18n('d/m/Y H:i', strtotime($t->arrival)) ) . '</p>';
+
+        if( ! empty($t->return_flight_code) ) {
+            echo '<hr>';
+            echo '<p><strong>Voo de Retorno:</strong> ' . esc_html($t->return_flight_code) . ' <small class="text-muted">' . esc_html($t->airline) . '</small></p>';
+            echo '<p><strong>Origem (volta):</strong> ' . esc_html($t->return_origin) . ' <strong>Destino (volta):</strong> ' . esc_html($t->return_destination) . '</p>';
+            if( $t->return_departure ) echo '<p><strong>Partida (volta):</strong> ' . esc_html( date_i18n('d/m/Y H:i', strtotime($t->return_departure)) ) . '</p>';
+            if( $t->return_arrival ) echo '<p><strong>Chegada (volta):</strong> ' . esc_html( date_i18n('d/m/Y H:i', strtotime($t->return_arrival)) ) . '</p>';
+        }
+
+        if( ! empty($t->stops) ) {
+            $stops = json_decode($t->stops);
+            if( json_last_error() === JSON_ERROR_NONE && ! empty($stops) ) {
+                echo '<hr><p><strong>Paradas / Escalas:</strong></p><ul>';
+                foreach ( $stops as $s ) {
+                    $local = isset($s->local) ? esc_html($s->local) : '';
+                    $time = isset($s->time) ? esc_html($s->time) : '';
+                    echo '<li>' . $local . ($time ? ' (' . $time . ')' : '') . '</li>';
+                }
+                echo '</ul>';
+            }
+        }
+
         echo '<p><strong>Assento:</strong> ' . esc_html( $t->seat ) . ' <strong>Status:</strong> ' . esc_html( $t->status ) . '</p>';
         echo '</div></div>';
     }

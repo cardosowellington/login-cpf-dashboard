@@ -22,4 +22,16 @@ require_once LOGIN_PATH . 'includes/cpf-travel-endpoints.php';
 register_activation_hook( __FILE__, 'cpf_travel_install' );
 function cpf_travel_install() {
     cpf_travel_create_table();
+
+    if ( ! wp_next_scheduled( 'cpf_travel_sync_hook' ) ) {
+        wp_schedule_event( time(), 'hourly', 'cpf_travel_sync_hook' );
+    }
 }
+
+register_deactivation_hook( __FILE__, 'cpf_travel_deactivate' );
+function cpf_travel_deactivate() {
+    $timestamp = wp_next_scheduled( 'cpf_travel_sync_hook' );
+    if ( $timestamp ) wp_unschedule_event( $timestamp, 'cpf_travel_sync_hook' );
+}
+
+add_action( 'cpf_travel_sync_hook', 'cpf_travel_sync_users' );
