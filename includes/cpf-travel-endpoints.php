@@ -1,9 +1,9 @@
 <?php
-if( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 add_action('wp_ajax_cpf_travel_add_booking', 'cpf_travel_add_booking_ajax');
 function cpf_travel_add_booking_ajax() {
-    if( ! current_user_can('manage_options') ) {
+    if ( ! current_user_can('manage_options') ) {
         wp_send_json_error('Acesso negado.');
     }
     check_admin_referer('cpf_travel_add_nonce', 'nonce');
@@ -28,7 +28,7 @@ function cpf_travel_add_booking_ajax() {
     ];
 
     $insert = cpf_travel_add_booking($user_id, $data);
-    if( is_wp_error($insert) ) {
+    if ( is_wp_error($insert) ) {
         wp_send_json_error($insert->get_error_message());
     }
     wp_send_json_success(['id' => $insert]);

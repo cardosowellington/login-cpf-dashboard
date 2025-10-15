@@ -1,5 +1,5 @@
 <?php
-if( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 function cpf_travel_add_booking( $user_id, $data ) {
     global $wpdb;
@@ -8,7 +8,7 @@ function cpf_travel_add_booking( $user_id, $data ) {
     $cpf = isset($data['cpf']) && !empty($data['cpf']) ? preg_replace('/\\D/','', $data['cpf']) : null;
     $user_id = isset($data['user_id']) && !empty($data['user_id']) ? intval($data['user_id']) : null;
 
-    if( $cpf && ! $user_id ) {
+    if ( $cpf && ! $user_id ) {
         $user_id = $wpdb->get_var( $wpdb->prepare("\n SELECT user_id FROM {$wpdb->usermeta}\n WHERE meta_key = 'cpf' AND meta_value = %s LIMIT 1\n ", $cpf) );
     }
 
@@ -30,12 +30,12 @@ function cpf_travel_add_booking( $user_id, $data ) {
         'status' => isset($data['status']) ? sanitize_text_field($data['status']) : 'confirmed',
     ];
 
-    if( isset($data['stops']) ) {
-        if( is_array($data['stops']) ) {
+    if ( isset($data['stops']) ) {
+        if ( is_array($data['stops']) ) {
             $fields['stops'] = wp_json_encode($data['stops']);
         } else {
             $decoded = json_decode($data['stops']);
-            if( json_last_error() === JSON_ERROR_NONE ) {
+            if ( json_last_error() === JSON_ERROR_NONE ) {
                 $fields['stops'] = wp_json_encode($decoded);
             } else {
                 $raw = sanitize_text_field($data['stops']);
@@ -43,14 +43,14 @@ function cpf_travel_add_booking( $user_id, $data ) {
                 $arr = [];
                 foreach ($parts as $p) {
                     $p = trim($p);
-                    if(strpos($p, ':') !== false) {
+                    if (strpos($p, ':') !== false) {
                         list($local,$time) = array_map('trim', explode(':', $p, 2));
                         $arr[] = ['local' => $local, 'time' => $time];
                     } else {
                         $arr[] = ['local' => $p, 'time' => ''];
                     }
                 }
-                if(!empty($arr)) $fields['stops'] = wp_json_encode($arr);
+                if (!empty($arr)) $fields['stops'] = wp_json_encode($arr);
                 else $fields['stops'] = null;
             }
         }
@@ -58,12 +58,12 @@ function cpf_travel_add_booking( $user_id, $data ) {
         $fields['stops'] = null;
     }
 
-    if( empty( $fields['flight_code'] ) ) {
+    if ( empty( $fields['flight_code'] ) ) {
         return new WP_Error('no_flight_code', 'flight_code é obrigatório.');
     }
 
     $inserted = $wpdb->insert( $table, $fields );
-    if( $inserted === false ) {
+    if ( $inserted === false ) {
         return new WP_Error('db_insert', $wpdb->last_error);
     }
 
@@ -83,9 +83,9 @@ function cpf_travel_get_bookings( $user_id = null, $args = [] ) {
 
     $order = in_array(strtoupper($args['order']), ['ASC','DESC']) ? strtoupper($args['order']) : 'DESC';
 
-    if( $user_id ) {
+    if ( $user_id ) {
         $query = $wpdb->prepare( "SELECT * FROM $table WHERE user_id = %d ORDER BY departure $order LIMIT %d OFFSET %d", $user_id, intval($args['per_page']), $offset );
-    }else if( isset($args['cpf']) && ! empty($args['cpf']) ) {
+    }else if ( isset($args['cpf']) && ! empty($args['cpf']) ) {
         $cpf = preg_replace('/\\D/','', $args['cpf']);
         $query = $wpdb->prepare( "SELECT * FROM $table WHERE cpf = %s ORDER BY departure $order LIMIT %d OFFSET %d", $cpf, intval($args['per_page']), $offset );
     }else {
@@ -101,11 +101,11 @@ function cpf_travel_sync_users() {
     $table = $wpdb->prefix . 'travel_bookings';
 
     $rows = $wpdb->get_results( "SELECT id, cpf FROM $table WHERE user_id IS NULL AND cpf IS NOT NULL" );
-    if( empty($rows) ) return;
+    if ( empty($rows) ) return;
 
     foreach ( $rows as $r ) {
         $user_id = $wpdb->get_var( $wpdb->prepare("SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = 'cpf' AND meta_value = %s LIMIT 1", $r->cpf) );
-        if( $user_id ) {
+        if ( $user_id ) {
             $wpdb->update( $table, [ 'user_id' => $user_id ], [ 'id' => $r->id ] );
         }
     }
