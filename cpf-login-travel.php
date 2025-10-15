@@ -7,7 +7,7 @@
  * Author URI: https://github.com/cardosowellington
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+if( ! defined( 'ABSPATH' ) ) exit;
 
 define( 'LOGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'LOGIN_URL',  plugin_dir_url( __FILE__ ) );

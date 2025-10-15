@@ -1,5 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit;
+if( ! defined( 'ABSPATH' ) ) exit;
 
 function cpf_travel_add_booking( $user_id, $data ) {
     global $wpdb;
@@ -17,12 +17,12 @@ function cpf_travel_add_booking( $user_id, $data ) {
         'status' => isset($data['status']) ? sanitize_text_field($data['status']) : 'confirmed',
     ];
 
-    if ( empty( $fields['flight_code'] ) ) {
+    if( empty( $fields['flight_code'] ) ) {
         return new WP_Error('no_flight_code', 'flight_code é obrigatório.');
     }
 
     $inserted = $wpdb->insert( $table, $fields );
-    if ( $inserted === false ) {
+    if( $inserted === false ) {
         return new WP_Error('db_insert', $wpdb->last_error);
     }
 
