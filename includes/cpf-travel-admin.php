@@ -7,9 +7,13 @@ add_action('admin_menu', function(){
 
 function cpf_travel_admin_page() {
     if( ! current_user_can('manage_options') ) wp_die('Acesso negado.');
+    $msg = isset($_GET['msg']) ? sanitize_text_field($_GET['msg']) : '';
     ?>
     <div class="wrap">
         <h1>Adicionar Booking</h1>
+        <?php if($msg === 'ok'): ?><div class="notice notice-success"><p>Booking adicionado com sucesso.</p></div><?php endif; ?>
+        <?php if($msg === 'error'): ?><div class="notice notice-error"><p>Erro ao adicionar booking.</p></div><?php endif; ?>
+        <?php if($msg === 'user_not_found'): ?><div class="notice notice-error"><p>Usuário não encontrado para o CPF informado.</p></div><?php endif; ?>
         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <?php wp_nonce_field('cpf_travel_add_nonce'); ?>
             <input type="hidden" name="action" value="cpf_travel_add_booking_form" />
@@ -22,6 +26,16 @@ function cpf_travel_admin_page() {
                 <tr><th><label for="destination">Destination</label></th><td><input type="text" name="destination" id="destination" /></td></tr>
                 <tr><th><label for="departure">Departure (YYYY-MM-DD HH:MM:SS)</label></th><td><input type="text" name="departure" id="departure" /></td></tr>
                 <tr><th><label for="arrival">Arrival (YYYY-MM-DD HH:MM:SS)</label></th><td><input type="text" name="arrival" id="arrival" /></td></tr>
+                <tr><td><hr></td></tr>
+                <tr><th><label for="return_flight_code">Return Flight code</label></th><td><input type="text" name="return_flight_code" id="return_flight_code"></td></tr>
+                <tr><th><label for="return_origin">Return Origin</label></th><td><input type="text" name="return_origin" id="return_origin"></td></tr>
+                <tr><th><label for="return_destination">Return Destination</label></th><td><input type="text" name="return_destination" id="return_destination"></td></tr>
+                <tr><th><label for="return_departure">Return Departure (YYYY-MM-DD HH:MM:SS)</label></th><td><input type="text" name="return_departure" id="return_departure"></td></tr>
+                <tr><th><label for="return_arrival">Return Arrival (YYYY-MM-DD HH:MM:SS)</label></th><td><input type="text" name="return_arrival" id="return_arrival"></td></tr>
+                <tr><td><hr></td></tr>
+                <tr><th><label for="stops">Stops</label></th>
+                <td><textarea name="stops" id="stops" rows="4" cols="50" placeholder='Ex: [{"local":"LIS","time":"1h30"},{"local":"MAD","time":"2h"}] OR LIS:1h30;MAD:2h'></textarea></td></tr>
+                <tr><td><hr></td></tr>
                 <tr><th><label for="seat">Seat</label></th><td><input type="text" name="seat" id="seat" /></td></tr>
                 <tr><th><label for="status">Status</label></th><td><input type="text" name="status" id="status" value="confirmed" /></td></tr>
             </table>
@@ -48,19 +62,27 @@ function cpf_travel_admin_handle_form() {
         $uq = new WP_User_Query([ 'meta_key' => 'cpf', 'meta_value' => $cpf, 'number' => 1 ]);
         $users = $uq->get_results();
         if( empty($users) ) {
-            wp_redirect(add_query_arg('msg','user_not_found', admin_url('admin.php?page=cpf-travel-bookings')));
-            exit;
+            $user_id = null;
+        }else{
+            $user_id = $users[0]->ID;
         }
-        $user_id = $users[0]->ID;
     }
 
     $data = [
+        'user_id' => $user_id,
+        'cpf' => $cpf ? $cpf : null,
         'flight_code' => isset($_POST['flight_code']) ? sanitize_text_field($_POST['flight_code']) : '',
         'airline' => isset($_POST['airline']) ? sanitize_text_field($_POST['airline']) : '',
         'origin' => isset($_POST['origin']) ? sanitize_text_field($_POST['origin']) : '',
         'destination' => isset($_POST['destination']) ? sanitize_text_field($_POST['destination']) : '',
         'departure' => isset($_POST['departure']) ? sanitize_text_field($_POST['departure']) : null,
         'arrival' => isset($_POST['arrival']) ? sanitize_text_field($_POST['arrival']) : null,
+        'return_flight_code' => isset($_POST['return_flight_code']) ? sanitize_text_field($_POST['return_flight_code']) : null,
+        'return_origin' => isset($_POST['return_origin']) ? sanitize_text_field($_POST['return_origin']) : null,
+        'return_destination' => isset($_POST['return_destination']) ? sanitize_text_field($_POST['return_destination']) : null,
+        'return_departure' => isset($_POST['return_departure']) ? sanitize_text_field($_POST['return_departure']) : null,
+        'return_arrival' => isset($_POST['return_arrival']) ? sanitize_text_field($_POST['return_arrival']) : null,
+        'stops' => isset($_POST['stops']) ? sanitize_textarea_field($_POST['stops']) : null,
         'seat' => isset($_POST['seat']) ? sanitize_text_field($_POST['seat']) : '',
         'status' => isset($_POST['status']) ? sanitize_text_field($_POST['status']) : 'confirmed',
     ];
