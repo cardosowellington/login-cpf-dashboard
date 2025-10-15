@@ -1,5 +1,5 @@
 <?php
-if( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 function cpf_travel_create_table() {
     global $wpdb;
@@ -9,7 +9,7 @@ function cpf_travel_create_table() {
     $sql = "CREATE TABLE $table (
         id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
         user_id BIGINT(20) UNSIGNED NOT NULL,
-        cpf varchar(14) NULL UNIQUE,
+        cpf VARCHAR(14) NULL UNIQUE,
         flight_code VARCHAR(50) NOT NULL,
         airline VARCHAR(100) DEFAULT NULL,
         origin VARCHAR(50) DEFAULT NULL,
@@ -29,6 +29,8 @@ function cpf_travel_create_table() {
         KEY user_id (user_id),
         KEY cpf (cpf)
     ) $charset_collate;";
+
+    echo 'Table creation SQL: ' . $sql; // Debug line to see the SQL statement
 
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     dbDelta( $sql );

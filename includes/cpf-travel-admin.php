@@ -1,19 +1,19 @@
 <?php
-if( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 add_action('admin_menu', function(){
     add_menu_page('Travel Bookings', 'Travel Bookings', 'manage_options', 'cpf-travel-bookings', 'cpf_travel_admin_page', 'dashicons-airplane', 26);
 });
 
 function cpf_travel_admin_page() {
-    if( ! current_user_can('manage_options') ) wp_die('Acesso negado.');
+    if ( ! current_user_can('manage_options') ) wp_die('Acesso negado.');
     $msg = isset($_GET['msg']) ? sanitize_text_field($_GET['msg']) : '';
     ?>
     <div class="wrap">
         <h1>Adicionar Booking</h1>
-        <?php if($msg === 'ok'): ?><div class="notice notice-success"><p>Booking adicionado com sucesso.</p></div><?php endif; ?>
-        <?php if($msg === 'error'): ?><div class="notice notice-error"><p>Erro ao adicionar booking.</p></div><?php endif; ?>
-        <?php if($msg === 'user_not_found'): ?><div class="notice notice-error"><p>Usuário não encontrado para o CPF informado.</p></div><?php endif; ?>
+        <?php if ($msg === 'ok'): ?><div class="notice notice-success"><p>Booking adicionado com sucesso.</p></div><?php endif; ?>
+        <?php if ($msg === 'error'): ?><div class="notice notice-error"><p>Erro ao adicionar booking.</p></div><?php endif; ?>
+        <?php if ($msg === 'user_not_found'): ?><div class="notice notice-error"><p>Usuário não encontrado para o CPF informado.</p></div><?php endif; ?>
         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <?php wp_nonce_field('cpf_travel_add_nonce'); ?>
             <input type="hidden" name="action" value="cpf_travel_add_booking_form" />
@@ -47,21 +47,21 @@ function cpf_travel_admin_page() {
 
 add_action('admin_post_cpf_travel_add_booking_form', 'cpf_travel_admin_handle_form');
 function cpf_travel_admin_handle_form() {
-    if( ! current_user_can('manage_options') ) wp_die('Acesso negado.');
+    if ( ! current_user_can('manage_options') ) wp_die('Acesso negado.');
     check_admin_referer('cpf_travel_add_nonce');
 
     $user_id = isset($_POST['user_id']) && !empty($_POST['user_id']) ? intval($_POST['user_id']) : 0;
     $cpf = isset($_POST['cpf']) && !empty($_POST['cpf']) ? preg_replace('/\D/', '', $_POST['cpf']) : '';
 
-    if( empty($user_id) && empty($cpf) ) {
+    if ( empty($user_id) && empty($cpf) ) {
         wp_redirect(add_query_arg('msg','missing', admin_url('admin.php?page=cpf-travel-bookings')));
         exit;
     }
 
-    if( empty($user_id) && ! empty($cpf) ) {
+    if ( empty($user_id) && ! empty($cpf) ) {
         $uq = new WP_User_Query([ 'meta_key' => 'cpf', 'meta_value' => $cpf, 'number' => 1 ]);
         $users = $uq->get_results();
-        if( empty($users) ) {
+        if ( empty($users) ) {
             $user_id = null;
         }else{
             $user_id = $users[0]->ID;
@@ -88,7 +88,7 @@ function cpf_travel_admin_handle_form() {
     ];
 
     $insert = cpf_travel_add_booking($user_id, $data);
-    if( is_wp_error($insert) ) {
+    if ( is_wp_error($insert) ) {
         wp_redirect(add_query_arg('msg','error', admin_url('admin.php?page=cpf-travel-bookings')));
         exit;
     }

@@ -1,5 +1,5 @@
 <?php
-if( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 class CPF_Login {
 
@@ -36,18 +36,18 @@ class CPF_Login {
 
         $cpf_raw = isset($_POST['cpf']) ? sanitize_text_field($_POST['cpf']) : '';
         $cpf = preg_replace('/\D/', '', $cpf_raw);
-        if( empty($cpf) ) {
+        if ( empty($cpf) ) {
             wp_send_json_error([ 'msg' => 'CPF é obrigatório.' ]);
         }
 
-        if( strlen($cpf) !== 11 ) {
+        if ( strlen($cpf) !== 11 ) {
             wp_send_json_error([ 'msg' => 'CPF inválido.' ]);
         }
 
         $uq = new WP_User_Query([ 'meta_key' => 'cpf', 'meta_value' => $cpf, 'number' => 1 ]);
         $users = $uq->get_results();
 
-        if( empty($users) ) {
+        if ( empty($users) ) {
             wp_send_json_error([ 'msg' => 'CPF não cadastrado.' ]);
         }
 

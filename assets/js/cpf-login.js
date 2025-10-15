@@ -8,10 +8,10 @@ jQuery( document ).ready( function( $ ){
       nonce: cpfLoginAjax.nonce,
       cpf: cpf
     },function( response ){
-      if( response.success ){
+      if ( response.success ){
         $( '#cpf-login-msg' ).html( '<span style="color:green">'+response.data.msg+'</span>' );
         window.location.href = response.data.redirect
-      }else{
+      } else {
         $( '#cpf-login-msg' ).html( '<span style="color:red">'+response.data.msg+'</span>' );
       }
     } )
