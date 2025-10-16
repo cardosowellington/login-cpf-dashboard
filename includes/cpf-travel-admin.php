@@ -36,7 +36,6 @@ function cpf_travel_admin_page() {
                 <tr><th><label for="stops">Stops</label></th>
                 <td><textarea name="stops" id="stops" rows="4" cols="50" placeholder='Ex: [{"local":"LIS","tempo":"1h30"},{"local":"MAD","tempo":"2h"}] OR LIS:1h30;MAD:2h'></textarea></td></tr>
                 <tr><td><hr></td></tr>
-                <tr><th><label for="seat">Seat</label></th><td><input type="text" name="seat" id="seat" /></td></tr>
                 <tr><th><label for="status">Status</label></th><td><input type="text" name="status" id="status" value="confirmed" /></td></tr>
             </table>
             <?php submit_button('Adicionar Booking'); ?>
@@ -83,7 +82,6 @@ function cpf_travel_admin_handle_form() {
         'return_departure' => isset($_POST['return_departure']) ? sanitize_text_field($_POST['return_departure']) : null,
         'return_arrival' => isset($_POST['return_arrival']) ? sanitize_text_field($_POST['return_arrival']) : null,
         'stops' => isset($_POST['stops']) ? sanitize_textarea_field($_POST['stops']) : null,
-        'seat' => isset($_POST['seat']) ? sanitize_text_field($_POST['seat']) : '',
         'status' => isset($_POST['status']) ? sanitize_text_field($_POST['status']) : 'confirmed',
     ];
 

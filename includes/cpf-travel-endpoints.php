@@ -23,7 +23,6 @@ function cpf_travel_add_booking_ajax() {
         'return_departure' => isset($_POST['return_departure']) ? sanitize_text_field($_POST['return_departure']) : null,
         'return_arrival' => isset($_POST['return_arrival']) ? sanitize_text_field($_POST['return_arrival']) : null,
         'stops' => isset($_POST['stops']) ? sanitize_textarea_field($_POST['stops']) : null,
-        'seat' => isset($_POST['seat']) ? sanitize_text_field($_POST['seat']) : '',
         'status' => isset($_POST['status']) ? sanitize_text_field($_POST['status']) : 'confirmed',
     ];
 

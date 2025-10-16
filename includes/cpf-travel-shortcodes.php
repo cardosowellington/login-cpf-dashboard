@@ -44,7 +44,7 @@ function cpf_travel_user_trips_shortcode( $atts ) {
             }
         }
 
-        echo '<p><strong>Assento:</strong> ' . esc_html( $t->seat ) . ' <strong>Status:</strong> ' . esc_html( $t->status ) . '</p>';
+        echo '<p><strong>Status:</strong> ' . esc_html( $t->status ) . '</p>';
         echo '</div></div>';
     }
     echo '</div>';

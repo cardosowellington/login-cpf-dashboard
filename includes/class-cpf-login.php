@@ -25,40 +25,79 @@ class CPF_Login {
             <label for="cpf">Digite seu CPF</label>
             <input type="text" id="cpf" name="cpf" required maxlength="14" inputmode="numeric" placeholder="000.000.000-00" />
             <button type="submit">Entrar</button>
-            <div id="cpf-login-msg" aria-live="polite"></div>
+            <div id="cpf-login-msg" aria-label="polite"></div>
         </form>
         <?php
         return ob_get_clean();
     }
 
     public function cpf_login_handler() {
-        check_ajax_referer( 'cpf_login_nonce', 'nonce' );
+        check_ajax_referer('cpf_login_nonce', 'nonce');
+        global $wpdb;
 
         $cpf_raw = isset($_POST['cpf']) ? sanitize_text_field($_POST['cpf']) : '';
         $cpf = preg_replace('/\D/', '', $cpf_raw);
-        if ( empty($cpf) ) {
-            wp_send_json_error([ 'msg' => 'CPF é obrigatório.' ]);
+
+        if (empty($cpf)) {
+            wp_send_json_error(['msg' => 'CPF é obrigatório.']);
         }
 
-        if ( strlen($cpf) !== 11 ) {
-            wp_send_json_error([ 'msg' => 'CPF inválido.' ]);
+        if (strlen($cpf) !== 11) {
+            wp_send_json_error(['msg' => 'CPF inválido.']);
         }
 
-        $uq = new WP_User_Query([ 'meta_key' => 'cpf', 'meta_value' => $cpf, 'number' => 1 ]);
+        // 🔍 1️⃣ Primeiro, tenta localizar o usuário pelo CPF em wp_usermeta
+        $uq = new WP_User_Query([
+            'meta_key'   => 'cpf',
+            'meta_value' => $cpf,
+            'number'     => 1,
+        ]);
         $users = $uq->get_results();
 
-        if ( empty($users) ) {
-            wp_send_json_error([ 'msg' => 'CPF não cadastrado.' ]);
+        if (!empty($users)) {
+            $user = $users[0];
+        } else {
+            $table = $wpdb->prefix . 'travel_bookings';
+            $row = $wpdb->get_row(
+                $wpdb->prepare("SELECT * FROM $table WHERE cpf = %s LIMIT 1", $cpf)
+            );
+
+            if (!$row) {
+                wp_send_json_error(['msg' => 'CPF não cadastrado em nossa base.']);
+            }
+
+            $login = 'user_' . $cpf;
+            $email = $row->cpf . '@temp.user';
+            $password = wp_generate_password();
+
+            $user_id = wp_create_user($login, $password, $email);
+
+            if (is_wp_error($user_id)) {
+                wp_send_json_error(['msg' => 'Falha ao criar usuário automaticamente.']);
+            }
+
+            wp_update_user([
+                'ID'           => $user_id,
+                'display_name' => 'Viajante ' . substr($cpf, -3),
+                'user_nicename'=> sanitize_title('user-' . $cpf)
+            ]);
+
+            update_user_meta($user_id, 'cpf', $cpf);
+
+            $wpdb->update($table, ['user_id' => $user_id], ['cpf' => $cpf]);
+
+            $user = get_user_by('id', $user_id);
         }
 
-        $user = $users[0];
+        wp_set_current_user($user->ID);
+        wp_set_auth_cookie($user->ID, true);
 
-        wp_set_current_user( $user->ID );
-        wp_set_auth_cookie( $user->ID, true );
+        update_user_meta($user->ID, 'cpf', $cpf);
 
-        update_user_meta( $user->ID, 'cpf', $cpf );
-
-        wp_send_json_success([ 'msg' => 'Login realizado com sucesso.', 'redirect' => home_url('/dashboard/') ]);
+        wp_send_json_success([
+            'msg'      => 'Login realizado com sucesso!',
+            'redirect' => home_url('/dashboard/'),
+        ]);
     }
 }
 
