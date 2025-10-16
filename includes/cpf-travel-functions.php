@@ -44,10 +44,10 @@ function cpf_travel_add_booking( $user_id, $data ) {
                 foreach ($parts as $p) {
                     $p = trim($p);
                     if (strpos($p, ':') !== false) {
-                        list($local,$time) = array_map('trim', explode(':', $p, 2));
-                        $arr[] = ['local' => $local, 'time' => $time];
+                        list($local,$tempo) = array_map('trim', explode(':', $p, 2));
+                        $arr[] = ['local' => $local, 'tempo' => $tempo];
                     } else {
-                        $arr[] = ['local' => $p, 'time' => ''];
+                        $arr[] = ['local' => $p, 'tempo' => ''];
                     }
                 }
                 if (!empty($arr)) $fields['stops'] = wp_json_encode($arr);

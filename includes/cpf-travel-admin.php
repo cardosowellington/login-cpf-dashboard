@@ -34,7 +34,7 @@ function cpf_travel_admin_page() {
                 <tr><th><label for="return_arrival">Return Arrival (YYYY-MM-DD HH:MM:SS)</label></th><td><input type="text" name="return_arrival" id="return_arrival"></td></tr>
                 <tr><td><hr></td></tr>
                 <tr><th><label for="stops">Stops</label></th>
-                <td><textarea name="stops" id="stops" rows="4" cols="50" placeholder='Ex: [{"local":"LIS","time":"1h30"},{"local":"MAD","time":"2h"}] OR LIS:1h30;MAD:2h'></textarea></td></tr>
+                <td><textarea name="stops" id="stops" rows="4" cols="50" placeholder='Ex: [{"local":"LIS","tempo":"1h30"},{"local":"MAD","tempo":"2h"}] OR LIS:1h30;MAD:2h'></textarea></td></tr>
                 <tr><td><hr></td></tr>
                 <tr><th><label for="seat">Seat</label></th><td><input type="text" name="seat" id="seat" /></td></tr>
                 <tr><th><label for="status">Status</label></th><td><input type="text" name="status" id="status" value="confirmed" /></td></tr>

@@ -37,8 +37,8 @@ function cpf_travel_user_trips_shortcode( $atts ) {
                 echo '<hr><p><strong>Paradas / Escalas:</strong></p><ul>';
                 foreach ( $stops as $s ) {
                     $local = isset($s->local) ? esc_html($s->local) : '';
-                    $time = isset($s->time) ? esc_html($s->time) : '';
-                    echo '<li>' . $local . ($time ? ' (' . $time . ')' : '') . '</li>';
+                    $tempo = isset($s->tempo) ? esc_html($s->tempo) : '';
+                    echo '<li>' . $local . ($tempo ? ' (' . $tempo . ')' : '') . '</li>';
                 }
                 echo '</ul>';
             }

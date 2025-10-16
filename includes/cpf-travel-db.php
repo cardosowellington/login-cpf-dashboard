@@ -4,6 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 function cpf_travel_create_table() {
     global $wpdb;
     $table = $wpdb->prefix . 'travel_bookings';
+    $wpdb->query("ALTER TABLE $table MODIFY COLUMN user_id BIGINT(20) UNSIGNED NULL;");
     $charset_collate = $wpdb->get_charset_collate();
 
     $sql = "CREATE TABLE $table (
@@ -29,8 +30,6 @@ function cpf_travel_create_table() {
         KEY user_id (user_id),
         KEY cpf (cpf)
     ) $charset_collate;";
-
-    echo 'Table creation SQL: ' . $sql; // Debug line to see the SQL statement
 
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     dbDelta( $sql );
