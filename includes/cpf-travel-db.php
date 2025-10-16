@@ -4,12 +4,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 function cpf_travel_create_table() {
     global $wpdb;
     $table = $wpdb->prefix . 'travel_bookings';
-    $wpdb->query("ALTER TABLE $table MODIFY COLUMN user_id BIGINT(20) UNSIGNED NULL;");
     $charset_collate = $wpdb->get_charset_collate();
 
     $sql = "CREATE TABLE $table (
         id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-        user_id BIGINT(20) UNSIGNED NOT NULL,
+        user_id BIGINT(20) UNSIGNED NULL,
         cpf VARCHAR(14) NULL UNIQUE,
         flight_code VARCHAR(50) NOT NULL,
         airline VARCHAR(100) DEFAULT NULL,
@@ -22,7 +21,6 @@ function cpf_travel_create_table() {
         return_destination VARCHAR(50) DEFAULT NULL,
         return_departure DATETIME DEFAULT NULL,
         return_arrival DATETIME DEFAULT NULL,
-        seat VARCHAR(20) DEFAULT NULL,
         stops TEXT DEFAULT NULL,
         status VARCHAR(32) DEFAULT 'confirmed',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

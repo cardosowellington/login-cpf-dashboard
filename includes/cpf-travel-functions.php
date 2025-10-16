@@ -26,7 +26,6 @@ function cpf_travel_add_booking( $user_id, $data ) {
         'return_destination' => isset($data['return_destination']) ? sanitize_text_field($data['return_destination']) : null,
         'return_departure' => isset($data['return_departure']) ? sanitize_text_field($data['return_departure']) : null,
         'return_arrival' => isset($data['return_arrival']) ? sanitize_text_field($data['return_arrival']) : null,
-        'seat' => isset($data['seat']) ? sanitize_text_field($data['seat']) : null,
         'status' => isset($data['status']) ? sanitize_text_field($data['status']) : 'confirmed',
     ];
 
