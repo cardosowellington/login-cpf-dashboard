@@ -46,7 +46,7 @@ class CPF_Login {
             wp_send_json_error(['msg' => 'CPF inválido.']);
         }
 
-        // 🔍 1️⃣ Primeiro, tenta localizar o usuário pelo CPF em wp_usermeta
+        // Primeiro, tenta localizar o usuário pelo CPF em wp_usermeta
         $uq = new WP_User_Query([
             'meta_key'   => 'cpf',
             'meta_value' => $cpf,
