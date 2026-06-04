@@ -22,16 +22,16 @@ function cpf_travel_admin_page() {
                     <td><input type="text" name="cpf" id="cpf" /> ou <input type="text" name="user_id" id="user_id" /></td></tr>
                 <tr><th><label for="flight_code">Flight code</label></th><td><input type="text" name="flight_code" id="flight_code" required /></td></tr>
                 <tr><th><label for="airline">Airline</label></th><td><input type="text" name="airline" id="airline" /></td></tr>
-                <tr><th><label for="origin">Origin</label></th><td><input type="text" name="origin" id="origin" /></td></tr>
+                <tr><th><label for="origin">Origin</label></th><td><input type="hidden" id="origin_iata" name="origin_iata" /><input type="text" name="origin" id="origin" autocomplete="off" /></td></tr>
                 <tr><th><label for="destination">Destination</label></th><td><input type="text" name="destination" id="destination" /></td></tr>
-                <tr><th><label for="departure">Departure (YYYY-MM-DD HH:MM:SS)</label></th><td><input type="text" name="departure" id="departure" /></td></tr>
-                <tr><th><label for="arrival">Arrival (YYYY-MM-DD HH:MM:SS)</label></th><td><input type="text" name="arrival" id="arrival" /></td></tr>
+                <tr><th><label for="departure">Departure (YYYY-MM-DD HH:MM:SS)</label></th><td><input type="datetime-local" name="departure" id="departure" step="60"/></td></tr>
+                <tr><th><label for="arrival">Arrival (YYYY-MM-DD HH:MM:SS)</label></th><td><input type="datetime-local" name="arrival" id="arrival" step="60"/></td></tr>
                 <tr><td><hr></td></tr>
                 <tr><th><label for="return_flight_code">Return Flight code</label></th><td><input type="text" name="return_flight_code" id="return_flight_code"></td></tr>
                 <tr><th><label for="return_origin">Return Origin</label></th><td><input type="text" name="return_origin" id="return_origin"></td></tr>
                 <tr><th><label for="return_destination">Return Destination</label></th><td><input type="text" name="return_destination" id="return_destination"></td></tr>
-                <tr><th><label for="return_departure">Return Departure (YYYY-MM-DD HH:MM:SS)</label></th><td><input type="text" name="return_departure" id="return_departure"></td></tr>
-                <tr><th><label for="return_arrival">Return Arrival (YYYY-MM-DD HH:MM:SS)</label></th><td><input type="text" name="return_arrival" id="return_arrival"></td></tr>
+                <tr><th><label for="return_departure">Return Departure (YYYY-MM-DD HH:MM:SS)</label></th><td><input type="datetime-local" name="return_departure" id="return_departure" step="60"/></td></tr>
+                <tr><th><label for="return_arrival">Return Arrival (YYYY-MM-DD HH:MM:SS)</label></th><td><input type="datetime-local" name="return_arrival" id="return_arrival" step="60"/></td></tr>
                 <tr><td><hr></td></tr>
                 <tr><th><label for="stops">Stops</label></th>
                 <td><textarea name="stops" id="stops" rows="4" cols="50" placeholder='Ex: [{"local":"LIS","tempo":"1h30"},{"local":"MAD","tempo":"2h"}] OR LIS:1h30;MAD:2h'></textarea></td></tr>
